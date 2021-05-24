@@ -1,0 +1,77 @@
+{
+  "start_url": "app.html",
+  "scope": ".",
+  "lang": "en",
+  "name": "Example Application",
+  "short_name": "Example",
+  "description": "This is some simple example web application",
+  "categories": [
+    "example",
+    "test"
+  ],
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "aqua",
+  "theme_color": "aliceblue",
+  "related_applications": [
+    {
+      "platform": "windows",
+      "id": "00000000-0000-0000-0000-000000000000",
+      "fingerprints": [
+        {
+          "type": "secure",
+          "value": "something"
+        }
+      ]
+    },
+    {
+      "platform": "play",
+      "min_version": "1.0.0",
+      "url": "https://play.google.com"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/mailto?url=%s"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Example Shortcut",
+      "url": "/shortcut",
+      "icons": [
+        {
+          "src": "/resources/shortcut.png",
+          "sizes": "32x32"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+
+      "src": "/resources/icon1.png",
+      "purpose": "maskable monochrome",
+      "label": "Example Icon"
+    },
+    {
+      "src": "/resources/icon2.png",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/resources/screenshot1.png",
+      "platform": "windows",
+      "label": "My Amazing App In Action"
+    },
+    {
+      "src": "/resources/screenshot2.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "invalid_key_123_456": "this_should_be_ignored",
+  "another_invalid_key_123_456": "also_ignored"
+}

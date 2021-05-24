@@ -1,0 +1,53 @@
+{
+  "start_url": "https://example.com/app.html",
+  "scope": "https://example.com/",
+  "name": "Example Application",
+  "short_name": "Example",
+  "categories": [],
+  "dir": "auto",
+  "lang": "en-US",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "windows",
+      "id": "00000000-0000-0000-0000-000000000000",
+      "fingerprints": [
+        {
+          "type": "type",
+          "value": "value"
+        }
+      ]
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "mailto",
+      "url": "/mailto?url=%s"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Example Shortcut",
+      "url": "/shortcut",
+      "icons": []
+    }
+  ],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "64x64",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot.png",
+      "sizes": "any",
+      "platform": "windows",
+      "label": "This is screenshot"
+    }
+  ]
+}
