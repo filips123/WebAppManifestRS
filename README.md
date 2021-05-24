@@ -91,7 +91,7 @@ assert_eq!(manifest.display, Display::Standalone);
 assert_eq!(manifest.orientation, Orientation::Portrait);
 ```
 
-## Creating
+### Creating
 
 To create a new manifest, simply construct the struct:
 

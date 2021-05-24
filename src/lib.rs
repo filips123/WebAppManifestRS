@@ -93,7 +93,7 @@
 //! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 //!
-//! # Creating
+//! ## Creating
 //!
 //! To create a new manifest, simply construct the struct:
 //!
@@ -520,8 +520,7 @@ impl WebAppManifest {
     ///
     /// # Errors
     ///
-    /// - [`ParseError`][url::ParseError] if the error occurs while parsing the URLs.
-    /// - [`ManifestError`][ManifestError] if the error occurs while validating the manifest.
+    /// - [`ManifestError`][ManifestError] if the error occurs while processing the manifest.
     ///
     /// # See also
     ///
