@@ -1,0 +1,41 @@
+# IDE & System
+$RECYCLE.BIN/
+.AppleDouble
+.DS_Store
+.LSOverride
+.Trash-*
+.buildpath
+.c9
+.c9revisions
+.directory
+.fuse_hidden*
+.idea
+.nfs*
+.project
+.settings
+.vs
+.vscode
+*.iml
+[Dd]esktop.ini
+[Tt]humbs.db
+
+# Logs
+logs/
+*.log
+
+# Distribution & Packaging
+build/
+debug/
+dist/
+pkg/
+target/
+Cargo.lock
+
+# Cache & Temporary Files
+cache/
+tmp/
+*.tmp
+*.rs.bk
+
+# Do not ignore .gitkeep files
+!.gitkeep
