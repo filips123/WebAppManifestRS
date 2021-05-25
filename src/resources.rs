@@ -16,7 +16,7 @@ use crate::types::*;
 /// - [Specification](https://w3c.github.io/manifest/#dfn-fingerprints-0)
 ///
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ExternalApplicationFingerprint {
     /// Platform-defined fingerprint type.
@@ -33,7 +33,7 @@ pub struct ExternalApplicationFingerprint {
 /// - [Specification](https://w3c.github.io/manifest/#dfn-external-application-resource)
 ///
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ExternalApplicationResource {
     /// The `platform` field represents the platform this external application resource is
@@ -62,7 +62,7 @@ pub struct ExternalApplicationResource {
 
 /// A protocol resource represents a protocol that application can handle and should be registered.
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ProtocolHandlerResource {
     /// The `protocol` field contains the protocol to be handled.
@@ -81,7 +81,7 @@ pub struct ProtocolHandlerResource {
 /// - [Specification](https://w3c.github.io/manifest/#shortcut-items)
 ///
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ShortcutResource {
     /// The `name` field is represents the name of the shortcut as it is usually
@@ -113,7 +113,7 @@ pub struct ShortcutResource {
 /// - [Specification](https://w3c.github.io/manifest/#manifest-image-resources)
 ///
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct IconResource {
     /// The `src` field stores the path to the image file.
@@ -147,7 +147,7 @@ pub struct IconResource {
 /// - [Specification](https://w3c.github.io/manifest-app-info/#screenshot-object-and-its-members)
 ///
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ScreenshotResource {
     /// The `src` field stores the path to the image file.

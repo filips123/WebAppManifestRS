@@ -4,9 +4,7 @@ description = "Rust data structure and utilities for (de)serialization and stora
 keywords = ["progressive-web-app", "web-application-manifest", "w3c", "parser"]
 categories = ["data-structures", "parsing", "parser-implementations"]
 authors = ["filips <projects@filips.si>"]
-homepage = "https://github.com/filips123/WebAppManifestRS"
 repository = "https://github.com/filips123/WebAppManifestRS"
-documentation = "https://docs.rs/web_app_manifest"
 license = "MIT OR Apache-2.0"
 edition = "2018"
 
@@ -15,13 +13,13 @@ version = "0.0.0"
 
 [dependencies]
 csscolorparser = { git = "https://github.com/mazznoer/csscolorparser-rs", features = ["serde"] }
-custom_error = "1.9.2"
-language-tags = { git = "https://github.com/filips123/rust-language-tags", branch = "fix-deserializing-from-reader", features = ["serde"] }
-mime = { git = "https://github.com/hyperium/mime", features = ["serde1"] }
+language-tags = { version = "0.3.2", features = ["serde"] }
+mime = { git = "https://github.com/filips123/mime", branch = "implement-eq-partialeq", features = ["serde1"] }
 parse-display = "0.5.0"
 serde = { version = "1.0.126", features = ["derive"] }
 serde_with = { version = "1.9.1", features = ["macros"] }
 smart-default = "0.6.0"
+thiserror = "1.0.25"
 url = { version = "2.2.2", features = ["serde"] }
 
 [dev-dependencies]

@@ -236,7 +236,7 @@ pub mod types;
 /// and the fields, types and resources documentations for more details
 /// about specific fields and their use-cases.
 #[skip_serializing_none]
-#[derive(SmartDefault, Serialize, Deserialize, Debug)]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(default)]
 pub struct WebAppManifest {
     /// The `start_url` field represents the start URL of the web application, which is the
@@ -554,7 +554,7 @@ impl WebAppManifest {
         for external_application in &mut self.related_applications {
             if let Some(url) = &external_application.url {
                 if let Url::Relative(url) = url {
-                    external_application.url = Some(Url::Absolute(manifest_url.join(&url)?));
+                    external_application.url = Some(Url::Absolute(manifest_url.join(url)?));
                 } else if let Url::Unknown = url {
                     return Err(ManifestError::InvalidUnknownUrl);
                 }
@@ -564,7 +564,7 @@ impl WebAppManifest {
         // Parse the relative URLs in protocol handler resources with the manifest URL as a base
         for protocol_handler in &mut self.protocol_handlers {
             if let Url::Relative(url) = &protocol_handler.url {
-                protocol_handler.url = Url::Absolute(manifest_url.join(&url)?);
+                protocol_handler.url = Url::Absolute(manifest_url.join(url)?);
             } else if let Url::Unknown = protocol_handler.url {
                 return Err(ManifestError::InvalidUnknownUrl);
             }
@@ -573,14 +573,14 @@ impl WebAppManifest {
         // Parse the relative URLs in shortcut resources and their icons with the manifest URL as a base
         for shortcut in &mut self.shortcuts {
             if let Url::Relative(url) = &shortcut.url {
-                shortcut.url = Url::Absolute(manifest_url.join(&url)?);
+                shortcut.url = Url::Absolute(manifest_url.join(url)?);
             } else if let Url::Unknown = shortcut.url {
                 return Err(ManifestError::InvalidUnknownUrl);
             }
 
             for shortcut_icon in &mut shortcut.icons {
                 if let Url::Relative(src) = &shortcut_icon.src {
-                    shortcut_icon.src = Url::Absolute(manifest_url.join(&src)?);
+                    shortcut_icon.src = Url::Absolute(manifest_url.join(src)?);
                 } else if let Url::Unknown = shortcut_icon.src {
                     return Err(ManifestError::InvalidUnknownUrl);
                 }
@@ -590,7 +590,7 @@ impl WebAppManifest {
         // Parse the relative URLs in icon resources with the manifest URL as a base
         for icon in &mut self.icons {
             if let Url::Relative(src) = &icon.src {
-                icon.src = Url::Absolute(manifest_url.join(&src)?);
+                icon.src = Url::Absolute(manifest_url.join(src)?);
             } else if let Url::Unknown = icon.src {
                 return Err(ManifestError::InvalidUnknownUrl);
             }
@@ -599,7 +599,7 @@ impl WebAppManifest {
         // Parse the relative URLs in screenshot resources with the manifest URL as a base
         for screenshot in &mut self.screenshots {
             if let Url::Relative(src) = &screenshot.src {
-                screenshot.src = Url::Absolute(manifest_url.join(&src)?);
+                screenshot.src = Url::Absolute(manifest_url.join(src)?);
             } else if let Url::Unknown = screenshot.src {
                 return Err(ManifestError::InvalidUnknownUrl);
             }
@@ -621,15 +621,15 @@ impl WebAppManifest {
 
         if start_url.origin() != document_url.origin() {
             return Err(ManifestError::NotSameOrigin {
-                url1: start_url.to_string(),
-                url2: document_url.to_string(),
+                url1: start_url.clone(),
+                url2: document_url.clone(),
             });
         }
 
         if start_url.origin() != scope.origin() || !start_url.path().starts_with(scope.path()) {
             return Err(ManifestError::NotWithinScope {
-                url: start_url.to_string(),
-                scope: scope.to_string(),
+                url: start_url.clone(),
+                scope: scope.clone(),
             });
         }
 
@@ -646,8 +646,8 @@ impl WebAppManifest {
                 || !protocol_handler_url.path().starts_with(scope.path())
             {
                 return Err(ManifestError::NotWithinScope {
-                    url: protocol_handler_url.to_string(),
-                    scope: scope.to_string(),
+                    url: protocol_handler_url.clone(),
+                    scope: scope.clone(),
                 });
             }
         }
@@ -664,8 +664,8 @@ impl WebAppManifest {
                 || !shortcut_url.path().starts_with(scope.path())
             {
                 return Err(ManifestError::NotWithinScope {
-                    url: shortcut_url.to_string(),
-                    scope: scope.to_string(),
+                    url: shortcut_url.clone(),
+                    scope: scope.clone(),
                 });
             }
         }

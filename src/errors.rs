@@ -2,19 +2,28 @@
 
 //! Contains all manifest errors.
 
-use custom_error::custom_error;
-use url::ParseError;
+use thiserror::Error;
+use url::{ParseError, Url};
 
-custom_error! {#[derive(PartialEq)] pub ManifestError
+/// A manifest error represents all errors that can occur during manifest processing.
+#[derive(Error, Debug, Eq, PartialEq, Clone)]
+pub enum ManifestError {
+    /// When the URL parser encountered an error.
+    #[error("Error while parsing the URL: {source}")]
+    UrlParsing {
+        #[from]
+        source: ParseError,
+    },
+
     /// When unknown URL is provided in invalid context (e.g., when not in `scope` or `start_url`) fields).
-    InvalidUnknownUrl = "Provided unknown URL in invalid context",
-
-    /// When URL parser encountered an error.
-    UrlParsing {source: ParseError} = "Error while parsing URL ({source})",
+    #[error("Provided unknown URL in invalid context")]
+    InvalidUnknownUrl,
 
     /// When two URLs are not in the same origin.
-    NotSameOrigin {url1: String, url2: String} = "Provided URLs ({url1}, {url2}) are not in the same origin",
+    #[error("Provided URLs ({url1}, {url2}) are not in the same origin")]
+    NotSameOrigin { url1: Url, url2: Url },
 
     /// When the URL is not within the scope.
-    NotWithinScope {url: String, scope: String} = "Provided URL ({url}) is not within scope ({scope})",
+    #[error("Provided URL ({url}) is not within the scope ({scope})")]
+    NotWithinScope { url: Url, scope: Url },
 }

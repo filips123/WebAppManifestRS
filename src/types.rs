@@ -13,7 +13,7 @@ use url::Url as AbsoluteUrl;
 /// as a string. All relative URLs and document URL in the manifest
 /// can be converted to absolute URLs and parsed by calling
 /// [`process`][crate::WebAppManifest::process].
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
 #[serde(untagged)]
 pub enum Url {
     /// The parsed absolute URL.
@@ -34,14 +34,16 @@ pub enum Url {
 }
 
 impl Default for Url {
+    #[inline]
     fn default() -> Self {
-        Url::Unknown
+        Self::Unknown
     }
 }
 
 impl FromStr for Url {
     type Err = Box<dyn Error>;
 
+    #[inline]
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         Ok(match AbsoluteUrl::parse(string) {
             Ok(url) => Self::Absolute(url),
@@ -51,7 +53,7 @@ impl FromStr for Url {
 }
 
 /// The base direction in which to display direction-capable members of the manifest.
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
 pub enum Direction {
     /// No explicit directionality.
     ///
@@ -81,13 +83,14 @@ pub enum Direction {
 }
 
 impl Default for Direction {
+    #[inline]
     fn default() -> Self {
-        Direction::Auto
+        Self::Auto
     }
 }
 
 /// The preferred display mode of the web application.
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
 pub enum Display {
     /// Opens the web application in a conventional browser tab or new window,
     /// depending on the browser and platform.
@@ -126,13 +129,14 @@ pub enum Display {
 }
 
 impl Default for Display {
+    #[inline]
     fn default() -> Self {
-        Display::Browser
+        Self::Browser
     }
 }
 
 /// The preferred orientation of the web application.
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
 pub enum Orientation {
     /// Any is an orientation that means the screen can be locked to any one
     /// of the `portrait-primary`, `portrait-secondary`, `landscape-primary`
@@ -184,13 +188,14 @@ pub enum Orientation {
 }
 
 impl Default for Orientation {
+    #[inline]
     fn default() -> Self {
-        Orientation::Any
+        Self::Any
     }
 }
 
 /// The size of the image.
-#[derive(Display, FromStr, Debug, Eq, PartialEq, Hash, Clone)]
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
 pub enum ImageSize {
     /// Image can support any size.
     ///
@@ -206,13 +211,14 @@ pub enum ImageSize {
 }
 
 impl Default for ImageSize {
+    #[inline]
     fn default() -> Self {
-        ImageSize::Any
+        Self::Any
     }
 }
 
 /// The purpose of the image.
-#[derive(Display, FromStr, Debug, Eq, PartialEq, Hash, Clone)]
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
 #[display(style = "snake_case")]
 pub enum ImagePurpose {
     /// The user agent is free to display the icon in any context.
@@ -231,8 +237,9 @@ pub enum ImagePurpose {
 }
 
 impl Default for ImagePurpose {
+    #[inline]
     fn default() -> Self {
-        ImagePurpose::Any
+        Self::Any
     }
 }
 
