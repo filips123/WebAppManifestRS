@@ -26,4 +26,8 @@ pub enum ManifestError {
     /// When the URL is not within the scope.
     #[error("Provided URL ({url}) is not within the scope ({scope})")]
     NotWithinScope { url: Url, scope: Url },
+
+    /// When the URL is not absolute.
+    #[error("Provided URL cannot be converted an absolute URL")]
+    NotAbsolute { url: crate::types::Url },
 }

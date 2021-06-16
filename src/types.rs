@@ -3,8 +3,10 @@
 use std::error::Error;
 use std::str::FromStr;
 
+use crate::errors::ManifestError;
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
+use std::convert::TryInto;
 use url::Url as AbsoluteUrl;
 
 /// The resource URL.
@@ -49,6 +51,17 @@ impl FromStr for Url {
             Ok(url) => Self::Absolute(url),
             Err(_) => Self::Relative(string.to_string()),
         })
+    }
+}
+
+impl TryInto<AbsoluteUrl> for Url {
+    type Error = ManifestError;
+
+    fn try_into(self) -> Result<AbsoluteUrl, Self::Error> {
+        match self {
+            Self::Absolute(url) => Ok(url),
+            _ => Err(Self::Error::NotAbsolute { url: self }),
+        }
     }
 }
 
@@ -247,6 +260,8 @@ impl Default for ImagePurpose {
 #[allow(clippy::needless_update)]
 #[rustfmt::skip::macros(assert_eq, assert_matches, assert)]
 mod tests {
+    use assert_matches::assert_matches;
+
     use super::*;
 
     #[test]
@@ -267,6 +282,24 @@ mod tests {
         let expected = Url::Relative(url.to_string());
 
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_try_correct_url_into_absolute() {
+        let url = AbsoluteUrl::parse("https://example.com").unwrap();
+
+        let actual: AbsoluteUrl = Url::Absolute(url.clone()).try_into().unwrap();
+        let expected: AbsoluteUrl = url;
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_try_invalid_url_into_absolute() {
+        self::assert_matches!(
+            TryInto::<AbsoluteUrl>::try_into(Url::Relative("/index.html".to_string())).unwrap_err(),
+            ManifestError::NotAbsolute { url: _ }
+        );
     }
 
     #[test]
