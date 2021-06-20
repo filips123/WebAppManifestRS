@@ -4,6 +4,7 @@
   "name": "Example Application",
   "short_name": "Example",
   "categories": [],
+  "keywords": [],
   "dir": "auto",
   "lang": "en-US",
   "display": "fullscreen",

@@ -334,6 +334,20 @@ pub struct WebAppManifest {
     ///
     pub categories: Vec<String>,
 
+    /// The `keywords` field describes the application keywords which may be used in
+    /// addition to other metadata to provide more information about the application.
+    ///
+    /// Unlike categories, it is meant to contain specific arbitrary keywords that can
+    /// describe the application and its purpose in-depth.
+    ///
+    /// It is meant as a hint to catalogs or stores listing web applications. Catalogs
+    /// and stores are not required to honor this hint. It can also be used in the system
+    /// application menu/search to facilitate searching through installed applications.
+    ///
+    /// *Note:* This field is currently not described in the specification and is not standard.
+    ///
+        pub keywords: Vec<String>,
+
     /// The `dir` field describes the base direction in which to display direction-capable
     /// members of the manifest. Together with the [`lang`][WebAppManifest::lang] field,
     /// it helps to correctly display right-to-left languages.
@@ -364,7 +378,7 @@ pub struct WebAppManifest {
     /// # See also
     ///
     /// - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Manifest/display)
-    /// - [Specification](https://w3c.github.io/manifest/#disply-member)
+    /// - [Specification](https://w3c.github.io/manifest/#display-member)
     ///
     pub display: Display,
 
@@ -696,7 +710,7 @@ mod tests {
 
         assert_eq!(
             serialized,
-            r#"{"start_url":"/hello.html","scope":null,"name":"Example App","short_name":"Example","categories":[],"dir":"auto","display":"browser","orientation":"any","prefer_related_applications":false,"related_applications":[],"protocol_handlers":[],"shortcuts":[],"icons":[],"screenshots":[]}"#
+            r#"{"start_url":"/hello.html","scope":null,"name":"Example App","short_name":"Example","categories":[],"keywords":[],"dir":"auto","display":"browser","orientation":"any","prefer_related_applications":false,"related_applications":[],"protocol_handlers":[],"shortcuts":[],"icons":[],"screenshots":[]}"#
         );
     }
 

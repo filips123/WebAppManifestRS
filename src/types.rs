@@ -213,7 +213,7 @@ pub enum ImageSize {
     /// Image is `{0}` by `{1}` pixels big.
     #[display("{0}x{1}")]
     #[from_str(regex = "(?P<0>[0-9]+)[xX](?P<1>[0-9]+)")]
-    Fixed(i32, i32),
+    Fixed(u32, u32),
 
     /// Image can support any size.
     ///
