@@ -772,7 +772,7 @@ mod tests {
         assert_eq!(manifest.background_color, None);
         assert_eq!(manifest.theme_color, None);
         assert_eq!(manifest.iarc_rating_id, None);
-        assert_eq!(manifest.prefer_related_applications, false);
+        assert!(!manifest.prefer_related_applications);
         assert_eq!(manifest.related_applications.len(), 0);
         assert_eq!(manifest.protocol_handlers.len(), 0);
         assert_eq!(manifest.shortcuts.len(), 0);
