@@ -4,9 +4,7 @@ use std::collections::HashSet;
 
 use mime::MediaType;
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
-use serde_with::skip_serializing_none;
-use serde_with::DisplayFromStr;
+use serde_with::{serde_as, skip_serializing_none, DisplayFromStr};
 use smart_default::SmartDefault;
 
 use crate::types::*;
@@ -252,10 +250,7 @@ mod tests {
     fn test_icon_sizes() {
         let icon = IconResource {
             src: Url::Relative("icon.png".to_string()),
-            sizes: [ImageSize::Fixed(16, 16), ImageSize::Fixed(32, 32)]
-                .iter()
-                .cloned()
-                .collect(),
+            sizes: [ImageSize::Fixed(16, 16), ImageSize::Fixed(32, 32)].iter().cloned().collect(),
             ..Default::default()
         };
 
@@ -278,10 +273,7 @@ mod tests {
     fn test_icon_purpose() {
         let icon = IconResource {
             src: Url::Relative("icon.png".to_string()),
-            purpose: [ImagePurpose::Maskable, ImagePurpose::Monochrome]
-                .iter()
-                .cloned()
-                .collect(),
+            purpose: [ImagePurpose::Maskable, ImagePurpose::Monochrome].iter().cloned().collect(),
             ..Default::default()
         };
 

@@ -8,14 +8,24 @@ use csscolorparser::Color;
 use language_tags::LanguageTag;
 use mime::MediaType;
 use url::Url as AbsoluteUrl;
-
 use web_app_manifest::resources::{
-    ExternalApplicationFingerprint, ExternalApplicationResource, IconResource,
-    ProtocolHandlerResource, ScreenshotResource, ShareTargetParams, ShareTargetResource,
+    ExternalApplicationFingerprint,
+    ExternalApplicationResource,
+    IconResource,
+    ProtocolHandlerResource,
+    ScreenshotResource,
+    ShareTargetParams,
+    ShareTargetResource,
     ShortcutResource,
 };
 use web_app_manifest::types::{
-    Display, ImagePurpose, ImageSize, Orientation, ShareTargetEnctype, ShareTargetMethod, Url,
+    Display,
+    ImagePurpose,
+    ImageSize,
+    Orientation,
+    ShareTargetEnctype,
+    ShareTargetMethod,
+    Url,
 };
 use web_app_manifest::WebAppManifest;
 

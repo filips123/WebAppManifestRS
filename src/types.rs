@@ -1,13 +1,14 @@
 //! Contains all manifest enums.
 
+use std::convert::TryInto;
 use std::error::Error;
 use std::str::FromStr;
 
-use crate::errors::ManifestError;
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
-use std::convert::TryInto;
 use url::Url as AbsoluteUrl;
+
+use crate::errors::ManifestError;
 
 /// The resource URL.
 ///

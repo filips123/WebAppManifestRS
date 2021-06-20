@@ -640,18 +640,11 @@ impl WebAppManifest {
         }
 
         // Get the parsed absolute scope URL
-        let scope = if let Url::Absolute(scope) = &self.scope {
-            scope
-        } else {
-            unreachable!()
-        };
+        let scope = if let Url::Absolute(scope) = &self.scope { scope } else { unreachable!() };
 
         // Check if the start URL is the same origin as document URL and is within the scope
-        let start_url = if let Url::Absolute(start_url) = &self.start_url {
-            start_url
-        } else {
-            unreachable!()
-        };
+        let start_url =
+            if let Url::Absolute(start_url) = &self.start_url { start_url } else { unreachable!() };
 
         if start_url.origin() != document_url.origin() {
             return Err(ManifestError::NotSameOrigin {
@@ -825,9 +818,7 @@ mod tests {
 
     #[test]
     fn test_unknown_url_reserialization() {
-        let original = WebAppManifest {
-            ..Default::default()
-        };
+        let original = WebAppManifest { ..Default::default() };
 
         let serialized = serde_json::to_string(&original).unwrap();
         let deserialized: WebAppManifest = serde_json::from_str(&serialized).unwrap();
@@ -930,10 +921,7 @@ mod tests {
         let document_url = base.join("index.html").unwrap();
         let manifest_url = base.join("resources/manifest.webmanifest").unwrap();
 
-        let mut manifest = WebAppManifest {
-            ..Default::default()
-        };
-
+        let mut manifest = WebAppManifest { ..Default::default() };
         manifest.process(&document_url, &manifest_url).unwrap();
 
         assert_eq!(manifest.start_url, Url::Absolute(document_url));
