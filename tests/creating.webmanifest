@@ -35,6 +35,16 @@
       "icons": []
     }
   ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link"
+    }
+  },
   "icons": [
     {
       "src": "/favicon.ico",

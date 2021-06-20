@@ -186,6 +186,7 @@
 //! - [Web Application Manifest (W3C Editor's Draft)][link-w3c-manifest] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
 //! - [Web Application Manifest - Application Info (W3C Editor's Draft)][link-w3c-manifest-app-info] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
 //! - [The Screen Orientation API (W3C Working Draft)][link-w3c-orientation] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
+//! - [Web Share Target API (Unofficial Draft)][link-w3c-share-target] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
 //! - [HTML Living Standard][link-whatwg-html] by WHATWG and Editors is licensed under the [CC-BY-4.0][link-license-cc-by-4.0].
 //!
 //! **Note:** The documentation and library are not affiliated with MDN or W3C in any way.
@@ -198,6 +199,7 @@
 //! [link-w3c-manifest]: https://w3c.github.io/manifest/
 //! [link-w3c-manifest-app-info]: https://w3c.github.io/manifest-app-info/
 //! [link-w3c-orientation]: https://www.w3.org/TR/screen-orientation/
+//! [link-w3c-share-target]: https://w3c.github.io/web-share-target/
 //! [link-whatwg-html]: https://html.spec.whatwg.org/multipage/semantics.html
 //!
 //! [link-docs]: https://docs.rs/web_app_manifest
@@ -346,7 +348,7 @@ pub struct WebAppManifest {
     ///
     /// *Note:* This field is currently not described in the specification and is not standard.
     ///
-        pub keywords: Vec<String>,
+    pub keywords: Vec<String>,
 
     /// The `dir` field describes the base direction in which to display direction-capable
     /// members of the manifest. Together with the [`lang`][WebAppManifest::lang] field,
@@ -486,6 +488,15 @@ pub struct WebAppManifest {
     ///
     pub shortcuts: Vec<ShortcutResource>,
 
+    /// The `share_target` field declares this application to be a web share target, and describes
+    /// how the application receives share data. A web share target is a type of share target.
+    ///
+    /// # See also
+    ///
+    /// - [Specification](https://w3c.github.io/web-share-target/#share_target-member)
+    ///
+    pub share_target: Option<ShareTargetResource>,
+
     /// The `icons` field specifies image files that can serve as application icons for different
     /// contexts. For example, they can be used to represent the web application amongst a list
     /// of other applications, or to integrate the web application with an OS's task switcher
@@ -601,6 +612,15 @@ impl WebAppManifest {
             }
         }
 
+        // Parse the relative share target URL with the manifest URL as a base
+        if let Some(share_target) = &mut self.share_target {
+            if let Url::Relative(url) = &share_target.action {
+                share_target.action = Url::Absolute(manifest_url.join(url)?);
+            } else if let Url::Unknown = share_target.action {
+                return Err(ManifestError::InvalidUnknownUrl);
+            }
+        }
+
         // Parse the relative URLs in icon resources with the manifest URL as a base
         for icon in &mut self.icons {
             if let Url::Relative(src) = &icon.src {
@@ -679,6 +699,22 @@ impl WebAppManifest {
             {
                 return Err(ManifestError::NotWithinScope {
                     url: shortcut_url.clone(),
+                    scope: scope.clone(),
+                });
+            }
+        }
+
+        // Check if the share target URL is within the scope
+        if let Some(share_target) = &mut self.share_target {
+            let action = if let Url::Absolute(action) = &share_target.action {
+                action
+            } else {
+                unreachable!()
+            };
+
+            if action.origin() != scope.origin() || !action.path().starts_with(scope.path()) {
+                return Err(ManifestError::NotWithinScope {
+                    url: action.clone(),
                     scope: scope.clone(),
                 });
             }
@@ -855,6 +891,11 @@ mod tests {
                 ..Default::default()
             }],
 
+            share_target: Some(ShareTargetResource {
+                action: Url::Relative("../share.html".to_string()),
+                ..Default::default()
+            }),
+
             icons: vec![IconResource {
                 src: Url::Relative("icon.png".to_string()),
                 ..Default::default()
@@ -877,6 +918,7 @@ mod tests {
         assert_eq!(manifest.protocol_handlers[0].url, Url::Absolute(manifest_url.join("../handler.html?uri=%s").unwrap()));
         assert_eq!(manifest.shortcuts[0].url, Url::Absolute(manifest_url.join("../shortcut.html").unwrap()));
         assert_eq!(manifest.shortcuts[0].icons[0].src, Url::Absolute(manifest_url.join("shortcut.png").unwrap()));
+        assert_eq!(manifest.share_target.unwrap().action, Url::Absolute(manifest_url.join("../share.html").unwrap()));
         assert_eq!(manifest.icons[0].src, Url::Absolute(manifest_url.join("icon.png").unwrap()));
         assert_eq!(manifest.screenshots[0].src, Url::Absolute(manifest_url.join("screenshot.png").unwrap()));
     }
@@ -903,6 +945,7 @@ mod tests {
         &mut WebAppManifest { protocol_handlers: vec![ProtocolHandlerResource { url: Url::Unknown, ..Default::default() }], ..Default::default() },
         &mut WebAppManifest { shortcuts: vec![ShortcutResource { url: Url::Unknown, ..Default::default() }], ..Default::default() },
         &mut WebAppManifest { shortcuts: vec![ShortcutResource { url: Url::Relative(".".to_string()), icons: vec![IconResource { ..Default::default() }], ..Default::default() }], ..Default::default() },
+        &mut WebAppManifest { share_target: Some(ShareTargetResource { action: Url::Unknown, ..Default::default() }), ..Default::default() },
         &mut WebAppManifest { icons: vec![IconResource { src: Url::Unknown, ..Default::default() }], ..Default::default() },
         &mut WebAppManifest { screenshots: vec![ScreenshotResource { src: Url::Unknown, ..Default::default() }], ..Default::default() },
     })]
@@ -968,6 +1011,13 @@ mod tests {
                 url: Url::Absolute(AbsoluteUrl::parse("https://example.org").unwrap()),
                 ..Default::default()
             }],
+            ..Default::default()
+        },
+        &mut WebAppManifest {
+            share_target: Some(ShareTargetResource {
+                action: Url::Absolute(AbsoluteUrl::parse("https://example.org").unwrap()),
+                ..Default::default()
+            }),
             ..Default::default()
         },
     })]

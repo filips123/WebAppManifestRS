@@ -4,7 +4,9 @@ use std::collections::HashSet;
 
 use mime::MediaType;
 use serde::{Deserialize, Serialize};
+use serde_with::serde_as;
 use serde_with::skip_serializing_none;
+use serde_with::DisplayFromStr;
 use smart_default::SmartDefault;
 
 use crate::types::*;
@@ -84,11 +86,11 @@ pub struct ProtocolHandlerResource {
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ShortcutResource {
-    /// The `name` field is represents the name of the shortcut as it is usually
+    /// The `name` field represents the name of the shortcut as it is usually
     /// displayed to the user in a context menu.
     pub name: String,
 
-    /// The `name` field is represents the short version name of the shortcut. It is
+    /// The `name` field represents the short version name of the shortcut. It is
     /// intended to be used where there is insufficient space to display the full
     /// name of the shortcut.
     pub short_name: Option<String>,
@@ -103,6 +105,56 @@ pub struct ShortcutResource {
 
     /// The `icons` field serves as iconic representations of the shortcut in various contexts.
     pub icons: Vec<IconResource>,
+}
+
+/// The share target params represent which parameters names should the application receive.
+///
+/// # See also
+///
+/// - [Specification](https://w3c.github.io/web-share-target/#sharetargetparams-and-its-members)
+///
+#[skip_serializing_none]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[serde(default)]
+pub struct ShareTargetParams {
+    /// The `title` field specifies the name of the query parameter used for
+    /// the title of the document being shared.
+    pub title: Option<String>,
+
+    /// The `text` field specifies the name of the query parameter used for
+    /// the arbitrary text that forms the body of the message being shared.
+    pub text: Option<String>,
+
+    /// The `url` field specifies the name of the query parameter used for
+    /// the URL string referring to a resource being shared.
+    pub url: Option<String>,
+}
+
+/// The share target represents how the application receives share data.
+///
+/// # See also
+///
+/// - [Specification](https://w3c.github.io/web-share-target/#sharetarget-and-its-members)
+///
+#[skip_serializing_none]
+#[serde_as]
+#[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[serde(default)]
+pub struct ShareTargetResource {
+    /// The `action` field specifies the URL for the web share target.
+    pub action: Url,
+
+    /// The `method` field specifies the HTTP request method for the web share target.
+    #[serde_as(as = "DisplayFromStr")]
+    pub method: ShareTargetMethod,
+
+    /// The `enctype` field specifies how the share data is encoded in
+    /// the body of a POST request. It is ignored when method is GET.
+    #[serde_as(as = "DisplayFromStr")]
+    pub enctype: ShareTargetEnctype,
+
+    /// The `params` field specifies which parameters names should the application receive.
+    pub params: ShareTargetParams,
 }
 
 /// An icon resource represents an image resource that is conceptually part of a
@@ -179,6 +231,22 @@ pub struct ScreenshotResource {
 #[rustfmt::skip::macros(assert_eq, assert_matches, assert)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_share_target_method() {
+        let serialized = r#"{"action":"share","method":"PoSt","params":{}}"#;
+        let deserialized: ShareTargetResource = serde_json::from_str(serialized).unwrap();
+
+        assert_eq!(deserialized.method, ShareTargetMethod::Post);
+    }
+
+    #[test]
+    fn test_share_target_enctype() {
+        let serialized = r#"{"action":"share","enctype":"MultiPart/Form-Data","params":{}}"#;
+        let deserialized: ShareTargetResource = serde_json::from_str(serialized).unwrap();
+
+        assert_eq!(deserialized.enctype, ShareTargetEnctype::FormData);
+    }
 
     #[test]
     fn test_icon_sizes() {

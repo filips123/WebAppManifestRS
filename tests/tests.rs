@@ -11,9 +11,12 @@ use url::Url as AbsoluteUrl;
 
 use web_app_manifest::resources::{
     ExternalApplicationFingerprint, ExternalApplicationResource, IconResource,
-    ProtocolHandlerResource, ScreenshotResource, ShortcutResource,
+    ProtocolHandlerResource, ScreenshotResource, ShareTargetParams, ShareTargetResource,
+    ShortcutResource,
 };
-use web_app_manifest::types::{Display, ImagePurpose, ImageSize, Orientation, Url};
+use web_app_manifest::types::{
+    Display, ImagePurpose, ImageSize, Orientation, ShareTargetEnctype, ShareTargetMethod, Url,
+};
 use web_app_manifest::WebAppManifest;
 
 #[test]
@@ -51,6 +54,17 @@ fn test_creating_manifest() {
             url: Url::from_str("/shortcut").unwrap(),
             ..Default::default()
         }],
+
+        share_target: Some(ShareTargetResource {
+            action: Url::from_str("/share").unwrap(),
+            params: ShareTargetParams {
+                title: Some("name".to_string()),
+                text: Some("description".to_string()),
+                url: Some("link".to_string()),
+                ..Default::default()
+            },
+            ..Default::default()
+        }),
 
         icons: vec![IconResource {
             src: Url::from_str("/favicon.ico").unwrap(),
@@ -131,6 +145,14 @@ fn test_parsing_manifest() {
     assert_eq!(manifest.shortcuts[0].icons.len(), 1);
     assert_eq!(manifest.shortcuts[0].icons[0].src, Url::from_str("https://example.com/resources/shortcut.png").unwrap());
     assert!(manifest.shortcuts[0].icons[0].sizes.contains(&ImageSize::Fixed(32, 32)));
+
+    let share_target = manifest.share_target.unwrap();
+    assert_eq!(share_target.action, Url::from_str("https://example.com/share").unwrap());
+    assert_eq!(share_target.method, ShareTargetMethod::Post);
+    assert_eq!(share_target.enctype, ShareTargetEnctype::FormData);
+    assert_eq!(share_target.params.title,None);
+    assert_eq!(share_target.params.text, None);
+    assert_eq!(share_target.params.url, Some("link".to_string()));
 
     assert_eq!(manifest.icons.len(), 2);
     assert_eq!(manifest.icons[0].src, Url::from_str("https://example.com/resources/icon1.png").unwrap());

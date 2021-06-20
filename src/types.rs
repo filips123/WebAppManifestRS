@@ -207,6 +207,52 @@ impl Default for Orientation {
     }
 }
 
+/// The HTTP request method for the web share target.
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
+#[display(style = "UPPERCASE")]
+pub enum ShareTargetMethod {
+    /// The web share target uses the GET method.
+    ///
+    /// This is the default variant.
+    #[from_str(regex = "(?i)GET")]
+    Get,
+
+    /// The web share target uses the POST method.
+    #[from_str(regex = "(?i)POST")]
+    Post,
+}
+
+impl Default for ShareTargetMethod {
+    #[inline]
+    fn default() -> Self {
+        Self::Get
+    }
+}
+
+/// The encoding in the body of a POST request for the web share target.
+/// It is ignored when the method is GET.
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
+pub enum ShareTargetEnctype {
+    /// The web share target uses `application/x-www-form-urlencoded` encoding.
+    ///
+    /// This is the default variant.
+    #[display("application/x-www-form-urlencoded")]
+    #[from_str(regex = "(?i)application/x-www-form-urlencoded")]
+    UrlEncoded,
+
+    /// The web share target uses `multipart/form-data` encoding.
+    #[display("multipart/form-data")]
+    #[from_str(regex = "(?i)multipart/form-data")]
+    FormData,
+}
+
+impl Default for ShareTargetEnctype {
+    #[inline]
+    fn default() -> Self {
+        Self::UrlEncoded
+    }
+}
+
 /// The size of the image.
 #[derive(Display, FromStr, Debug, Eq, PartialEq, Ord, PartialOrd, Clone, Hash)]
 pub enum ImageSize {

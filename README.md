@@ -178,6 +178,7 @@ licensed under the following licenses:
 - [Web Application Manifest (W3C Editor's Draft)][link-w3c-manifest] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
 - [Web Application Manifest - Application Info (W3C Editor's Draft)][link-w3c-manifest-app-info] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
 - [The Screen Orientation API (W3C Working Draft)][link-w3c-orientation] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
+- [Web Share Target API (Unofficial Draft)][link-w3c-share-target] by W3C and Editors is licensed under the [W3C Document License][link-license-w3c].
 - [HTML Living Standard][link-whatwg-html] by WHATWG and Editors is licensed under the [CC-BY-4.0][link-license-cc-by-4.0].
 
 **Note:** The documentation and library are not affiliated with MDN or W3C in any way.
@@ -190,6 +191,7 @@ Read the official W3C specification for the accurate data.
 [link-w3c-manifest]: https://w3c.github.io/manifest/
 [link-w3c-manifest-app-info]: https://w3c.github.io/manifest-app-info/
 [link-w3c-orientation]: https://www.w3.org/TR/screen-orientation/
+[link-w3c-share-target]: https://w3c.github.io/web-share-target/
 [link-whatwg-html]: https://html.spec.whatwg.org/multipage/semantics.html
 
 [link-docs]: https://docs.rs/web_app_manifest
