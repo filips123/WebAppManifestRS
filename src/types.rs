@@ -55,6 +55,18 @@ impl FromStr for Url {
     }
 }
 
+impl TryInto<String> for Url {
+    type Error = ManifestError;
+
+    fn try_into(self) -> Result<String, Self::Error> {
+        match self {
+            Self::Absolute(url) => Ok(url.into()),
+            Self::Relative(url) => Ok(url),
+            _ => Err(Self::Error::NotStringifyable { url: self }),
+        }
+    }
+}
+
 impl TryInto<AbsoluteUrl> for Url {
     type Error = ManifestError;
 
@@ -67,7 +79,7 @@ impl TryInto<AbsoluteUrl> for Url {
 }
 
 /// The base direction in which to display direction-capable members of the manifest.
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub enum Direction {
     /// No explicit directionality.
     ///
@@ -104,7 +116,7 @@ impl Default for Direction {
 }
 
 /// The preferred display mode of the web application.
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub enum Display {
     /// Opens the web application in a conventional browser tab or new window,
     /// depending on the browser and platform.
@@ -150,7 +162,7 @@ impl Default for Display {
 }
 
 /// The preferred orientation of the web application.
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub enum Orientation {
     /// Any is an orientation that means the screen can be locked to any one
     /// of the `portrait-primary`, `portrait-secondary`, `landscape-primary`
@@ -209,7 +221,7 @@ impl Default for Orientation {
 }
 
 /// The HTTP request method for the web share target.
-#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Copy, Hash)]
 #[display(style = "UPPERCASE")]
 pub enum ShareTargetMethod {
     /// The web share target uses the GET method.
@@ -232,7 +244,7 @@ impl Default for ShareTargetMethod {
 
 /// The encoding in the body of a POST request for the web share target.
 /// It is ignored when the method is GET.
-#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Copy, Hash)]
 pub enum ShareTargetEnctype {
     /// The web share target uses `application/x-www-form-urlencoded` encoding.
     ///
@@ -255,7 +267,7 @@ impl Default for ShareTargetEnctype {
 }
 
 /// The size of the image.
-#[derive(Display, FromStr, Debug, Eq, PartialEq, Ord, PartialOrd, Clone, Hash)]
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash)]
 pub enum ImageSize {
     /// Image is `{0}` by `{1}` pixels big.
     #[display("{0}x{1}")]
@@ -278,7 +290,7 @@ impl Default for ImageSize {
 }
 
 /// The purpose of the image.
-#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Copy, Hash)]
 #[display(style = "snake_case")]
 pub enum ImagePurpose {
     /// The user agent is free to display the icon in any context.
@@ -329,6 +341,36 @@ mod tests {
         let expected = Url::Relative(url.to_string());
 
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_try_absolute_url_into_string() {
+        let url = "https://example.com/handler/?protocol=%s";
+        let parsed = Url::from_str(url).unwrap();
+
+        let actual: String = parsed.try_into().unwrap();
+        let expected: String = url.into();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_try_relative_url_into_string() {
+        let url = "/handler/?protocol=%s";
+        let parsed = Url::from_str(url).unwrap();
+
+        let actual: String = parsed.try_into().unwrap();
+        let expected: String = url.into();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_try_unknown_url_into_string() {
+        self::assert_matches!(
+            TryInto::<String>::try_into(Url::Unknown).unwrap_err(),
+            ManifestError::NotStringifyable { url: _ }
+        );
     }
 
     #[test]

@@ -30,4 +30,8 @@ pub enum ManifestError {
     /// When the URL is not absolute.
     #[error("Provided URL cannot be converted an absolute URL")]
     NotAbsolute { url: crate::types::Url },
+
+    /// When the URL cannot be converted to `String`.
+    #[error("Provided URL cannot be converted to `String`")]
+    NotStringifyable { url: crate::types::Url },
 }
