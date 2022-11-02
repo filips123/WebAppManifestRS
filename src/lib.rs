@@ -218,6 +218,7 @@
 
 use csscolorparser::Color;
 use language_tags::LanguageTag;
+use serde::de::IntoDeserializer;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use smart_default::SmartDefault;
@@ -230,6 +231,23 @@ use crate::types::*;
 pub mod errors;
 pub mod resources;
 pub mod types;
+
+/// Deserializes an empty string in `Option<T>` as `None`.
+///
+/// Source: https://github.com/serde-rs/serde/issues/1425#issuecomment-462282398
+fn empty_string_as_none<'de, D, T>(de: D) -> Result<Option<T>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    T: serde::Deserialize<'de>,
+{
+    let opt = Option::<String>::deserialize(de)?;
+    let opt = opt.as_deref();
+
+    match opt {
+        None | Some("") => Ok(None),
+        Some(s) => T::deserialize(s.into_deserializer()).map(Some),
+    }
+}
 
 /// A manifest is a JSON document that contains startup parameters and
 /// application defaults for when a web application is launched.
@@ -370,6 +388,7 @@ pub struct WebAppManifest {
     /// - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Manifest/lang)
     /// - [Specification](https://w3c.github.io/manifest/#lang-member)
     ///
+    #[serde(deserialize_with = "empty_string_as_none")]
     pub lang: Option<LanguageTag>,
 
     /// The `display` member determines the developers’ preferred display mode for the
@@ -413,6 +432,7 @@ pub struct WebAppManifest {
     /// - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Manifest/background_color)
     /// - [Specification](https://w3c.github.io/manifest/#background_color-member)
     ///
+    #[serde(deserialize_with = "empty_string_as_none")]
     pub background_color: Option<Color>,
 
     /// The `theme_color` field defines the default theme color for the application.
@@ -427,6 +447,7 @@ pub struct WebAppManifest {
     /// - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Manifest/theme_color)
     /// - [Specification](https://w3c.github.io/manifest/#theme_color-member)
     ///
+    #[serde(deserialize_with = "empty_string_as_none")]
     pub theme_color: Option<Color>,
 
     /// The `iarc_rating_id` field represents the [International Age Rating Coalition (IARC)](https://www.globalratings.com/)
@@ -551,6 +572,7 @@ impl WebAppManifest {
     ///
     /// - [Specification](https://w3c.github.io/manifest/#processing)
     ///
+    #[allow(clippy::result_large_err)]
     pub fn process(
         &mut self,
         document_url: &AbsoluteUrl,
@@ -721,6 +743,8 @@ impl WebAppManifest {
 #[allow(clippy::needless_update)]
 #[rustfmt::skip::macros(assert_eq, assert_matches, assert)]
 mod tests {
+    use std::str::FromStr;
+
     use assert_matches::assert_matches;
     use parameterized::parameterized;
 
@@ -778,6 +802,40 @@ mod tests {
         assert_eq!(manifest.shortcuts.len(), 0);
         assert_eq!(manifest.icons.len(), 0);
         assert_eq!(manifest.screenshots.len(), 0);
+    }
+
+    #[test]
+    fn test_empty_string_as_none() {
+        let serialized = r#"
+            {
+                "lang": "",
+                "background_color": "",
+                "theme_color": ""
+
+            }
+        "#;
+
+        let manifest: WebAppManifest = serde_json::from_str(serialized).unwrap();
+        assert_eq!(manifest.lang, None);
+        assert_eq!(manifest.background_color, None);
+        assert_eq!(manifest.theme_color, None);
+    }
+
+    #[test]
+    fn test_nonempty_string_as_some() {
+        let serialized = r#"
+            {
+                "lang": "sl-si",
+                "background_color": "lightblue",
+                "theme_color": "rgb(200, 180, 180)"
+
+            }
+        "#;
+
+        let manifest: WebAppManifest = serde_json::from_str(serialized).unwrap();
+        assert_eq!(manifest.lang, Some(LanguageTag::parse("sl-si").unwrap()));
+        assert_eq!(manifest.background_color, Some(Color::from_str("lightblue").unwrap()));
+        assert_eq!(manifest.theme_color, Some(Color::from_str("rgb(200, 180, 180)").unwrap()));
     }
 
     #[test]
