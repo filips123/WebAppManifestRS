@@ -5,7 +5,7 @@ Web Application Manifest for Rust
 [![downloads](https://img.shields.io/crates/d/web_app_manifest?label=downloads&style=flat-square)](https://crates.io/crates/web_app_manifest)
 [![license](https://img.shields.io/crates/l/web_app_manifest?label=license&style=flat-square)](https://github.com/filips123/WebAppManifestRS/blob/main/LICENSE)
 [![docs](https://img.shields.io/docsrs/web_app_manifest?label=docs&style=flat-square)](https://docs.rs/web_app_manifest)
-[![build](https://img.shields.io/github/workflow/status/filips123/WebAppManifestRS/Tests%20&%20Checks?label=build&style=flat-square)](https://github.com/filips123/WebAppManifestRS/actions)
+[![build](https://img.shields.io/github/actions/workflow/status/filips123/WebAppManifestRS/checks.yaml?label=build&style=flat-square)](https://github.com/filips123/WebAppManifestRS/actions)
 
 Rust data structure and utilities for (de)serialization and storage of Web Application Manifests.
 
