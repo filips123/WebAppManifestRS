@@ -63,7 +63,7 @@
 //! Because URLs can be relative and `serde_json` does not know how to resolve
 //! them, you will also need to call the [`process`](WebAppManifest::process)
 //! method and pas the document and manifest URLs to resolve all relative URLs
-//! in the manifest and perform origin and scope validation:
+//! in the manifest and perform the origin and scope validation:
 //!
 //! ```rust
 //! # use web_app_manifest::WebAppManifest;
@@ -126,7 +126,7 @@
 //!
 //! **Important:** Always use `..Default::default()` when constructing
 //! the manifest or its other structs. Adding new public fields will not
-//! count as a major change, so your code could break without it.
+//! be considered as a major change, so your code could break without it.
 //!
 //! Processing the manifest is not necessary, because it will be processed
 //! when parsing by this crate or the browser in any case.
@@ -157,9 +157,9 @@
 //! use a proper versioning scheme (SemVer).
 //!
 //! **Note:** Adding new public struct fields or enum variants, if required by
-//! the W3C specification updates, will not count as a major change. Your code
-//! should always be using `..Default::default()` when constructing the manifest
-//! or its other structs.
+//! the W3C specification updates, will not be considered as a major change.
+//! Your code should always be using `..Default::default()` when constructing
+//! the manifest or its other structs.
 //!
 //! # Contributing
 //!
@@ -216,13 +216,10 @@
 //! [link-clippy]: https://github.com/rust-lang/rust-clippy
 //! [link-rustfmt]: https://github.com/rust-lang/rustfmt
 
-use csscolorparser::Color;
-use language_tags::LanguageTag;
 use serde::de::IntoDeserializer;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use smart_default::SmartDefault;
-use url::Url as AbsoluteUrl;
 
 use crate::errors::ManifestError;
 use crate::resources::*;
@@ -234,7 +231,7 @@ pub mod types;
 
 /// Deserializes an empty string in `Option<T>` as `None`.
 ///
-/// Source: https://github.com/serde-rs/serde/issues/1425#issuecomment-462282398
+/// Source: <https://github.com/serde-rs/serde/issues/1425#issuecomment-462282398>
 fn empty_string_as_none<'de, D, T>(de: D) -> Result<Option<T>, D::Error>
 where
     D: serde::Deserializer<'de>,
@@ -589,11 +586,7 @@ impl WebAppManifest {
         if let Url::Relative(scope) = &self.scope {
             self.scope = Url::Absolute(manifest_url.join(scope)?);
         } else if let Url::Unknown = &self.scope {
-            let start_url = if let Url::Absolute(start_url) = &self.start_url {
-                start_url
-            } else {
-                unreachable!()
-            };
+            let Url::Absolute(start_url) = &self.start_url else {  unreachable!() };
             self.scope = Url::Absolute(start_url.join(".")?);
         }
 
@@ -662,11 +655,10 @@ impl WebAppManifest {
         }
 
         // Get the parsed absolute scope URL
-        let scope = if let Url::Absolute(scope) = &self.scope { scope } else { unreachable!() };
+        let Url::Absolute(scope) = &self.scope else { unreachable!() };
 
         // Check if the start URL is the same origin as document URL and is within the scope
-        let start_url =
-            if let Url::Absolute(start_url) = &self.start_url { start_url } else { unreachable!() };
+        let Url::Absolute(start_url) = &self.start_url else { unreachable!() };
 
         if start_url.origin() != document_url.origin() {
             return Err(ManifestError::NotSameOrigin {
@@ -684,12 +676,7 @@ impl WebAppManifest {
 
         // Check if protocol handler URLs are within the scope
         for protocol_handler in &self.protocol_handlers {
-            let protocol_handler_url =
-                if let Url::Absolute(protocol_handler_url) = &protocol_handler.url {
-                    protocol_handler_url
-                } else {
-                    unreachable!()
-                };
+            let Url::Absolute(protocol_handler_url) = &protocol_handler.url else { unreachable!() };
 
             if protocol_handler_url.origin() != scope.origin()
                 || !protocol_handler_url.path().starts_with(scope.path())
@@ -703,11 +690,7 @@ impl WebAppManifest {
 
         // Check if shortcut URLs are within the scope
         for shortcut in &self.shortcuts {
-            let shortcut_url = if let Url::Absolute(shortcut_url) = &shortcut.url {
-                shortcut_url
-            } else {
-                unreachable!()
-            };
+            let Url::Absolute(shortcut_url) = &shortcut.url else { unreachable!() };
 
             if shortcut_url.origin() != scope.origin()
                 || !shortcut_url.path().starts_with(scope.path())
@@ -721,11 +704,7 @@ impl WebAppManifest {
 
         // Check if the share target URL is within the scope
         if let Some(share_target) = &mut self.share_target {
-            let action = if let Url::Absolute(action) = &share_target.action {
-                action
-            } else {
-                unreachable!()
-            };
+            let Url::Absolute(action) = &share_target.action else { unreachable!() };
 
             if action.origin() != scope.origin() || !action.path().starts_with(scope.path()) {
                 return Err(ManifestError::NotWithinScope {

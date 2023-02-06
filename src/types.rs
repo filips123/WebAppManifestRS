@@ -6,32 +6,37 @@ use std::str::FromStr;
 
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
-use url::Url as AbsoluteUrl;
 
 use crate::errors::ManifestError;
+
+#[rustfmt::skip] #[doc(no_inline)] pub use csscolorparser::Color;
+#[rustfmt::skip] #[doc(no_inline)] pub use language_tags::LanguageTag;
+#[rustfmt::skip] #[doc(no_inline)] pub use mime::MediaType;
+#[rustfmt::skip] #[doc(no_inline)] pub use url::Url as AbsoluteUrl;
+#[rustfmt::skip] #[doc(no_inline)] pub use String as RelativeUrl;
 
 /// The resource URL.
 ///
 /// It can store either the parsed absolute URL or the relative URL
-/// as a string. All relative URLs and document URL in the manifest
+/// as a string. All relative URLs and the document URL in the manifest
 /// can be converted to absolute URLs and parsed by calling
 /// [`process`][crate::WebAppManifest::process].
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
 #[serde(untagged)]
 pub enum Url {
-    /// The parsed absolute URL.
+    /// The absolute URL, as a parsed URL record.
     Absolute(AbsoluteUrl),
 
-    /// The relative URL as an unparsed string.
-    Relative(String),
+    /// The relative URL, as an unparsed string.
+    Relative(RelativeUrl),
 
     /// The unknown URL.
     ///
     /// What this URL represents depends on the context. When using it as
     /// a start URL, it represents the document URL. When using it as a
     /// scope URL, it represents the result of parsing `.` with the start
-    /// URL as a base. In most other cases, it represents invalid URL that
-    /// should not be provided, and attempting to parse/use it should
+    /// URL as a base. In most other cases, it represents am invalid URL
+    /// that should not be provided, and attempting to parse/use it should
     /// cause an error.
     Unknown,
 }

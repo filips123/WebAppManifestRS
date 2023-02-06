@@ -2,9 +2,9 @@
 
 use std::collections::HashSet;
 
-use mime::MediaType;
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, skip_serializing_none, DisplayFromStr};
+use serde_with::formats::SpaceSeparator;
+use serde_with::{serde_as, skip_serializing_none, DisplayFromStr, StringWithSeparator};
 use smart_default::SmartDefault;
 
 use crate::types::*;
@@ -163,6 +163,7 @@ pub struct ShareTargetResource {
 /// - [Specification](https://w3c.github.io/manifest/#manifest-image-resources)
 ///
 #[skip_serializing_none]
+#[serde_as]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct IconResource {
@@ -177,12 +178,12 @@ pub struct IconResource {
     /// The `sizes` field contains image dimensions. It allows a user agent to
     /// quickly ignore images with incorrect sizes for the purpose.
     #[default([ImageSize::default()].iter().cloned().collect())]
-    #[serde(with = "serde_with::rust::StringWithSeparator::<serde_with::SpaceSeparator>")]
+    #[serde_as(as = "StringWithSeparator::<SpaceSeparator, ImageSize>")]
     pub sizes: HashSet<ImageSize>,
 
     /// The `purpose` field defines the purposes of the image.
     #[default([ImagePurpose::default()].iter().cloned().collect())]
-    #[serde(with = "serde_with::rust::StringWithSeparator::<serde_with::SpaceSeparator>")]
+    #[serde_as(as = "StringWithSeparator::<SpaceSeparator, ImagePurpose>")]
     pub purpose: HashSet<ImagePurpose>,
 
     /// The `label` field represents the accessible name of the image.
@@ -197,6 +198,7 @@ pub struct IconResource {
 /// - [Specification](https://w3c.github.io/manifest-app-info/#screenshot-object-and-its-members)
 ///
 #[skip_serializing_none]
+#[serde_as]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(default)]
 pub struct ScreenshotResource {
@@ -211,7 +213,7 @@ pub struct ScreenshotResource {
     /// The `sizes` field contains image dimensions. It allows a user agent to
     /// quickly ignore images with incorrect sizes for the purpose.
     #[default([ImageSize::default()].iter().cloned().collect())]
-    #[serde(with = "serde_with::rust::StringWithSeparator::<serde_with::SpaceSeparator>")]
+    #[serde_as(as = "StringWithSeparator::<SpaceSeparator, ImageSize>")]
     pub sizes: HashSet<ImageSize>,
 
     /// The `platform` field represents the distribution platform for which a
