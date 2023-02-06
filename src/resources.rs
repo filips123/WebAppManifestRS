@@ -173,7 +173,7 @@ pub struct IconResource {
     /// The `type` field serves as a hint as to the media type of the image. Its
     /// purpose is to allow a user agent to quickly ignore images with media types
     /// it does not support.
-    pub r#type: Option<MediaType>,
+    pub r#type: Option<MediaRange>,
 
     /// The `sizes` field contains image dimensions. It allows a user agent to
     /// quickly ignore images with incorrect sizes for the purpose.
@@ -208,7 +208,7 @@ pub struct ScreenshotResource {
     /// The `type` field serves as a hint as to the media type of the image. Its
     /// purpose is to allow a user agent to quickly ignore images with media types
     /// it does not support.
-    pub r#type: Option<MediaType>,
+    pub r#type: Option<MediaRange>,
 
     /// The `sizes` field contains image dimensions. It allows a user agent to
     /// quickly ignore images with incorrect sizes for the purpose.

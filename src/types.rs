@@ -11,7 +11,7 @@ use crate::errors::ManifestError;
 
 #[rustfmt::skip] #[doc(no_inline)] pub use csscolorparser::Color;
 #[rustfmt::skip] #[doc(no_inline)] pub use language_tags::LanguageTag;
-#[rustfmt::skip] #[doc(no_inline)] pub use mime::MediaType;
+#[rustfmt::skip] #[doc(no_inline)] pub use mime::MediaRange;
 #[rustfmt::skip] #[doc(no_inline)] pub use url::Url as AbsoluteUrl;
 #[rustfmt::skip] #[doc(no_inline)] pub use String as RelativeUrl;
 

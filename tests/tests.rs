@@ -4,10 +4,6 @@ use std::io::BufReader;
 use std::path::PathBuf;
 use std::str::FromStr;
 
-use csscolorparser::Color;
-use language_tags::LanguageTag;
-use mime::MediaType;
-use url::Url as AbsoluteUrl;
 use web_app_manifest::resources::{
     ExternalApplicationFingerprint,
     ExternalApplicationResource,
@@ -19,9 +15,13 @@ use web_app_manifest::resources::{
     ShortcutResource,
 };
 use web_app_manifest::types::{
+    AbsoluteUrl,
+    Color,
     Display,
     ImagePurpose,
     ImageSize,
+    LanguageTag,
+    MediaRange,
     Orientation,
     ShareTargetEnctype,
     ShareTargetMethod,
@@ -78,7 +78,7 @@ fn test_creating_manifest() {
 
         icons: vec![IconResource {
             src: Url::from_str("/favicon.ico").unwrap(),
-            r#type: Some(MediaType::from_str("image/x-icon").unwrap()),
+            r#type: Some(MediaRange::from_str("image/x-icon").unwrap()),
             sizes: [ImageSize::Fixed(64, 64)].iter().cloned().collect(),
             purpose: [ImagePurpose::Maskable].iter().cloned().collect(),
             ..Default::default()
@@ -160,7 +160,7 @@ fn test_parsing_manifest() {
     assert_eq!(share_target.action, Url::from_str("https://example.com/share").unwrap());
     assert_eq!(share_target.method, ShareTargetMethod::Post);
     assert_eq!(share_target.enctype, ShareTargetEnctype::FormData);
-    assert_eq!(share_target.params.title,None);
+    assert_eq!(share_target.params.title, None);
     assert_eq!(share_target.params.text, None);
     assert_eq!(share_target.params.url, Some("link".to_string()));
 
@@ -170,7 +170,7 @@ fn test_parsing_manifest() {
     assert!(manifest.icons[0].purpose.contains(&ImagePurpose::Monochrome));
     assert_eq!(manifest.icons[0].label, Some("Example Icon".to_string()));
     assert_eq!(manifest.icons[1].src, Url::from_str("https://example.com/resources/icon2.png").unwrap());
-    assert_eq!(manifest.icons[1].r#type, Some(MediaType::from_str("image/png").unwrap()));
+    assert_eq!(manifest.icons[1].r#type, Some(MediaRange::from_str("image/png").unwrap()));
     assert!(manifest.icons[1].sizes.contains(&ImageSize::Any));
 
     assert_eq!(manifest.screenshots.len(), 2);
@@ -178,6 +178,6 @@ fn test_parsing_manifest() {
     assert_eq!(manifest.screenshots[0].platform, Some("windows".to_string()));
     assert_eq!(manifest.screenshots[0].label, Some("My Amazing App In Action".to_string()));
     assert_eq!(manifest.screenshots[1].src, Url::from_str("https://example.com/resources/screenshot2.png").unwrap());
-    assert_eq!(manifest.screenshots[1].r#type, Some(MediaType::from_str("image/png").unwrap()));
+    assert_eq!(manifest.screenshots[1].r#type, Some(MediaRange::from_str("image/png").unwrap()));
     assert!(manifest.screenshots[1].sizes.contains(&ImageSize::Fixed(512, 512)));
 }
