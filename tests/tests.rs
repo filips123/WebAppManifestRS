@@ -181,3 +181,11 @@ fn test_parsing_manifest() {
     assert_eq!(manifest.screenshots[1].r#type, Some(MediaRange::from_str("image/png").unwrap()));
     assert!(manifest.screenshots[1].sizes.contains(&ImageSize::Fixed(512, 512)));
 }
+
+#[test]
+#[cfg(feature = "schemars")]
+fn test_generating_schema() {
+    // Just test that JSON schema generates successfully
+    let schema = schemars::schema_for!(WebAppManifest);
+    let _ = serde_json::to_string_pretty(&schema).unwrap();
+}

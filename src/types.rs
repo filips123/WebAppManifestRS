@@ -22,6 +22,7 @@ use crate::errors::ManifestError;
 /// can be converted to absolute URLs and parsed by calling
 /// [`process`][crate::WebAppManifest::process].
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(untagged)]
 pub enum Url {
     /// The absolute URL, as a parsed URL record.
@@ -85,6 +86,8 @@ impl TryInto<AbsoluteUrl> for Url {
 
 /// The base direction in which to display direction-capable members of the manifest.
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+#[serde(rename_all = "kebab-case")]
 pub enum Direction {
     /// No explicit directionality.
     ///
@@ -93,7 +96,6 @@ pub enum Direction {
     /// The implementation should determine the text's direction of direction-capable
     /// members by applying the [Rule P1](https://www.unicode.org/reports/tr9/tr9-42.html#P1)
     /// of [Unicode Bidirectional Algorithm](https://www.unicode.org/reports/tr9/tr9-42.html).
-    #[serde(rename = "auto")]
     Auto,
 
     /// Left-to-right text.
@@ -101,7 +103,6 @@ pub enum Direction {
     /// The implementation should override the [Rule P3](https://www.unicode.org/reports/tr9/tr9-42.html#P3)
     /// of [Unicode Bidirectional Algorithm](https://www.unicode.org/reports/tr9/tr9-42.html),
     /// setting the paragraph embedding level to `0`.
-    #[serde(rename = "ltr")]
     Ltr,
 
     /// Right-to-left text.
@@ -109,7 +110,6 @@ pub enum Direction {
     /// The implementation should override the [Rule P3](https://www.unicode.org/reports/tr9/tr9-42.html#P3)
     /// of [Unicode Bidirectional Algorithm](https://www.unicode.org/reports/tr9/tr9-42.html),
     /// setting the paragraph embedding level to `1`.
-    #[serde(rename = "rtl")]
     Rtl,
 }
 
@@ -122,19 +122,19 @@ impl Default for Direction {
 
 /// The preferred display mode of the web application.
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+#[serde(rename_all = "kebab-case")]
 pub enum Display {
     /// Opens the web application in a conventional browser tab or new window,
     /// depending on the browser and platform.
     ///
     /// This is the default variant and must be supported by the user agent.
-    #[serde(rename = "browser")]
     Browser,
 
     /// Opens the web application with browser UI elements hidden and takes
     /// up the entirety of the available display area.
     ///
     /// If not supported, the user agent must fall back to the `standalone` mode.
-    #[serde(rename = "fullscreen")]
     Fullscreen,
 
     /// Opens the web application to look and feel like a standalone native
@@ -145,7 +145,6 @@ pub enum Display {
     /// back button.
     ///
     /// If not supported, the user agent must fall back to the `minimal-ui` mode.
-    #[serde(rename = "standalone")]
     Standalone,
 
     /// Opens the web application to look and feel like a standalone native
@@ -155,7 +154,6 @@ pub enum Display {
     /// whatever is customary on the platform and user agent.
     ///
     /// If not supported, the user agent must fall back to the `browser` mode.
-    #[serde(rename = "minimal-ui")]
     MinimalUi,
 }
 
@@ -168,53 +166,47 @@ impl Default for Display {
 
 /// The preferred orientation of the web application.
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+#[serde(rename_all = "kebab-case")]
 pub enum Orientation {
     /// Any is an orientation that means the screen can be locked to any one
     /// of the `portrait-primary`, `portrait-secondary`, `landscape-primary`
     /// and `landscape-secondary`.
     ///
     /// This is the default variant.
-    #[serde(rename = "any")]
     Any,
 
     /// Natural is an orientation that refers to either `portrait-primary` or
     /// `landscape-primary` depending on the device's usual orientation. This
     /// orientation is usually provided by the underlying operating system.
-    #[serde(rename = "natural")]
     Natural,
 
     /// Landscape is an orientation where the screen width is greater than the
     /// screen height.
-    #[serde(rename = "landscape")]
     Landscape,
 
     /// Portrait is an orientation where the screen width is less than or equal
     /// to the screen height.
-    #[serde(rename = "portrait")]
     Portrait,
 
     /// Landscape-primary is an orientation where the screen width is greater than
     /// the screen height. If the device's natural orientation is landscape, then it
     /// is in landscape-primary when held in that position.
-    #[serde(rename = "landscape-primary")]
     LandscapePrimary,
 
     /// Landscape-secondary is an orientation where the screen width is greater than
     /// the screen height. If the device's natural orientation is landscape, then it
     /// is in landscape-secondary when rotated 180° from its natural orientation.
-    #[serde(rename = "landscape-secondary")]
     LandscapeSecondary,
 
     /// Portrait-primary is an orientation where the screen width is less than or equal
     /// to the screen height. If the device's natural orientation is portrait, then it
     /// is in portrait-primary when held in that position.
-    #[serde(rename = "portrait-primary")]
     PortraitPrimary,
 
     /// Portrait-secondary is an orientation where the screen width is less than or equal
     /// to the screen height. If the device's natural orientation is portrait, then it
     /// is in portrait-secondary when rotated 180° from its natural orientation.
-    #[serde(rename = "portrait-secondary")]
     PortraitSecondary,
 }
 
@@ -227,6 +219,7 @@ impl Default for Orientation {
 
 /// The HTTP request method for the web share target.
 #[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Copy, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema), schemars(rename_all = "UPPERCASE"))]
 #[display(style = "UPPERCASE")]
 pub enum ShareTargetMethod {
     /// The web share target uses the GET method.
@@ -250,17 +243,20 @@ impl Default for ShareTargetMethod {
 /// The encoding in the body of a POST request for the web share target.
 /// It is ignored when the method is GET.
 #[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Copy, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub enum ShareTargetEnctype {
     /// The web share target uses `application/x-www-form-urlencoded` encoding.
     ///
     /// This is the default variant.
     #[display("application/x-www-form-urlencoded")]
     #[from_str(regex = "(?i)application/x-www-form-urlencoded")]
+    #[cfg_attr(feature = "schemars", schemars(rename = "application/x-www-form-urlencoded"))]
     UrlEncoded,
 
     /// The web share target uses `multipart/form-data` encoding.
     #[display("multipart/form-data")]
     #[from_str(regex = "(?i)multipart/form-data")]
+    #[cfg_attr(feature = "schemars", schemars(rename = "multipart/form-data"))]
     FormData,
 }
 
@@ -273,10 +269,12 @@ impl Default for ShareTargetEnctype {
 
 /// The size of the image.
 #[derive(Display, FromStr, Debug, Eq, PartialEq, Ord, PartialOrd, Clone, Copy, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema), schemars(untagged))]
 pub enum ImageSize {
     /// Image is `{0}` by `{1}` pixels big.
     #[display("{0}x{1}")]
     #[from_str(regex = "(?P<0>[0-9]+)[xX](?P<1>[0-9]+)")]
+    #[cfg_attr(feature = "schemars", schemars(schema_with = "image_size_fixed"))]
     Fixed(u32, u32),
 
     /// Image can support any size.
@@ -284,6 +282,7 @@ pub enum ImageSize {
     /// This is the default variant.
     #[display("any")]
     #[from_str(regex = "(?i)any")]
+    #[cfg_attr(feature = "schemars", schemars(schema_with = "image_size_any"))]
     Any,
 }
 
@@ -294,9 +293,33 @@ impl Default for ImageSize {
     }
 }
 
+#[cfg(feature = "schemars")]
+fn image_size_fixed(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
+    schemars::schema::SchemaObject {
+        instance_type: Some(schemars::schema::InstanceType::String.into()),
+        string: Some(Box::new(schemars::schema::StringValidation {
+            pattern: Some("(?P<0>[0-9]+)[xX](?P<1>[0-9]+)".into()),
+            ..Default::default()
+        })),
+        ..Default::default()
+    }
+    .into()
+}
+
+#[cfg(feature = "schemars")]
+fn image_size_any(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
+    schemars::schema::SchemaObject {
+        instance_type: Some(schemars::schema::InstanceType::String.into()),
+        enum_values: Some(vec!["any".into()]),
+        ..Default::default()
+    }
+    .into()
+}
+
 /// The purpose of the image.
 #[derive(Display, FromStr, Debug, Eq, PartialEq, Clone, Copy, Hash)]
-#[display(style = "snake_case")]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema), schemars(rename_all = "kebab-case"))]
+#[display(style = "kebab-case")]
 pub enum ImagePurpose {
     /// The user agent is free to display the icon in any context.
     ///

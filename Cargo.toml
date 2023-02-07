@@ -19,6 +19,9 @@ serde_with = { version = "2.2.0", features = ["macros"] }
 smart-default = "0.6.0"
 thiserror = "1.0.30"
 
+# Optional dependencies
+schemars = { version = "0.8.11", features = ["url"], optional = true }
+
 # Type dependencies
 csscolorparser = { version = "0.6.0", features = ["serde"] }
 language-tags = { version = "0.3.0", features = ["serde"] }

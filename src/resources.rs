@@ -17,6 +17,7 @@ use crate::types::*;
 ///
 #[skip_serializing_none]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ExternalApplicationFingerprint {
     /// Platform-defined fingerprint type.
@@ -34,6 +35,7 @@ pub struct ExternalApplicationFingerprint {
 ///
 #[skip_serializing_none]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ExternalApplicationResource {
     /// The `platform` field represents the platform this external application resource is
@@ -61,8 +63,14 @@ pub struct ExternalApplicationResource {
 }
 
 /// A protocol resource represents a protocol that application can handle and should be registered.
+///
+/// # See also
+///
+/// - [Specification](https://wicg.github.io/manifest-incubations/#protocolhandler-items)
+///
 #[skip_serializing_none]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ProtocolHandlerResource {
     /// The `protocol` field contains the protocol to be handled.
@@ -82,6 +90,7 @@ pub struct ProtocolHandlerResource {
 ///
 #[skip_serializing_none]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ShortcutResource {
     /// The `name` field represents the name of the shortcut as it is usually
@@ -113,6 +122,7 @@ pub struct ShortcutResource {
 ///
 #[skip_serializing_none]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ShareTargetParams {
     /// The `title` field specifies the name of the query parameter used for
@@ -137,6 +147,7 @@ pub struct ShareTargetParams {
 #[skip_serializing_none]
 #[serde_as]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ShareTargetResource {
     /// The `action` field specifies the URL for the web share target.
@@ -144,11 +155,13 @@ pub struct ShareTargetResource {
 
     /// The `method` field specifies the HTTP request method for the web share target.
     #[serde_as(as = "DisplayFromStr")]
+    #[cfg_attr(feature = "schemars", schemars(with = "ShareTargetMethod"))]
     pub method: ShareTargetMethod,
 
     /// The `enctype` field specifies how the share data is encoded in
     /// the body of a POST request. It is ignored when method is GET.
     #[serde_as(as = "DisplayFromStr")]
+    #[cfg_attr(feature = "schemars", schemars(with = "ShareTargetEnctype"))]
     pub enctype: ShareTargetEnctype,
 
     /// The `params` field specifies which parameters names should the application receive.
@@ -165,6 +178,7 @@ pub struct ShareTargetResource {
 #[skip_serializing_none]
 #[serde_as]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct IconResource {
     /// The `src` field stores the path to the image file.
@@ -173,17 +187,20 @@ pub struct IconResource {
     /// The `type` field serves as a hint as to the media type of the image. Its
     /// purpose is to allow a user agent to quickly ignore images with media types
     /// it does not support.
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub r#type: Option<MediaRange>,
 
     /// The `sizes` field contains image dimensions. It allows a user agent to
     /// quickly ignore images with incorrect sizes for the purpose.
     #[default([ImageSize::default()].iter().cloned().collect())]
     #[serde_as(as = "StringWithSeparator::<SpaceSeparator, ImageSize>")]
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub sizes: HashSet<ImageSize>,
 
     /// The `purpose` field defines the purposes of the image.
     #[default([ImagePurpose::default()].iter().cloned().collect())]
     #[serde_as(as = "StringWithSeparator::<SpaceSeparator, ImagePurpose>")]
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub purpose: HashSet<ImagePurpose>,
 
     /// The `label` field represents the accessible name of the image.
@@ -200,6 +217,7 @@ pub struct IconResource {
 #[skip_serializing_none]
 #[serde_as]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct ScreenshotResource {
     /// The `src` field stores the path to the image file.
@@ -208,12 +226,14 @@ pub struct ScreenshotResource {
     /// The `type` field serves as a hint as to the media type of the image. Its
     /// purpose is to allow a user agent to quickly ignore images with media types
     /// it does not support.
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub r#type: Option<MediaRange>,
 
     /// The `sizes` field contains image dimensions. It allows a user agent to
     /// quickly ignore images with incorrect sizes for the purpose.
     #[default([ImageSize::default()].iter().cloned().collect())]
     #[serde_as(as = "StringWithSeparator::<SpaceSeparator, ImageSize>")]
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub sizes: HashSet<ImageSize>,
 
     /// The `platform` field represents the distribution platform for which a

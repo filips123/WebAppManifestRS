@@ -69,7 +69,7 @@ let manifest: WebAppManifest = serde_json::from_str(json)?;
 Because URLs can be relative and `serde_json` does not know how to resolve
 them, you will also need to call the [`process`](WebAppManifest::process)
 method and pas the document and manifest URLs to resolve all relative URLs
-in the manifest and perform origin and scope validation:
+in the manifest and perform the origin and scope validation:
 
 ```rust
 use url::Url;
@@ -123,7 +123,7 @@ let manifest = WebAppManifest {
 
 **Important:** Always use `..Default::default()` when constructing
 the manifest or its other structs. Adding new public fields will not
-count as a major change, so your code could break without it.
+be considered as a major change, so your code could break without it.
 
 Processing the manifest is not necessary, because it will be processed
 when parsing by this crate or the browser in any case.
@@ -135,6 +135,10 @@ to serialize it:
 let json = serde_json::to_string(&manifest)?;
 println!("{}", json);
 ```
+
+### Optional Features
+
+- `schemars` - Implements `JsonSchema` for manifest types.
 
 ### Other
 
@@ -149,9 +153,9 @@ official releases. Once it is ready to be published to Crates.io, it will
 use a proper versioning scheme (SemVer).
 
 **Note:** Adding new public struct fields or enum variants, if required by
-the W3C specification updates, will not count as a major change. Your code
-should always be using `..Default::default()` when constructing the manifest
-or its other structs.
+the W3C specification updates, will not be considered as a major change.
+Your code should always be using `..Default::default()` when constructing
+the manifest or its other structs.
 
 ## Contributing
 

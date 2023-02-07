@@ -144,6 +144,10 @@
 //! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 //!
+//! ## Optional Features
+//!
+//! - `schemars` - Implements `JsonSchema` for manifest types.
+//!
 //! ## Other
 //!
 //! See [docs][link-docs] of structs and fields for more documentation.
@@ -254,6 +258,7 @@ where
 /// about specific fields and their use-cases.
 #[skip_serializing_none]
 #[derive(SmartDefault, Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(default)]
 pub struct WebAppManifest {
     /// The `start_url` field represents the start URL of the web application, which is the
@@ -361,7 +366,7 @@ pub struct WebAppManifest {
     /// and stores are not required to honor this hint. It can also be used in the system
     /// application menu/search to facilitate searching through installed applications.
     ///
-    /// *Note:* This field is currently not described in the specification and is not standard.
+    /// *Note:* This field is currently not described in the specification and is not standardized.
     ///
     pub keywords: Vec<String>,
 
@@ -386,6 +391,7 @@ pub struct WebAppManifest {
     /// - [Specification](https://w3c.github.io/manifest/#lang-member)
     ///
     #[serde(deserialize_with = "empty_string_as_none")]
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub lang: Option<LanguageTag>,
 
     /// The `display` member determines the developers’ preferred display mode for the
@@ -430,6 +436,7 @@ pub struct WebAppManifest {
     /// - [Specification](https://w3c.github.io/manifest/#background_color-member)
     ///
     #[serde(deserialize_with = "empty_string_as_none")]
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub background_color: Option<Color>,
 
     /// The `theme_color` field defines the default theme color for the application.
@@ -445,6 +452,7 @@ pub struct WebAppManifest {
     /// - [Specification](https://w3c.github.io/manifest/#theme_color-member)
     ///
     #[serde(deserialize_with = "empty_string_as_none")]
+    #[cfg_attr(feature = "schemars", schemars(with = "Option<String>"))]
     pub theme_color: Option<Color>,
 
     /// The `iarc_rating_id` field represents the [International Age Rating Coalition (IARC)](https://www.globalratings.com/)
@@ -491,6 +499,7 @@ pub struct WebAppManifest {
     /// # See also
     ///
     /// - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Manifest/protocol_handlers)
+    /// - [Specification](https://wicg.github.io/manifest-incubations/#protocol_handlers-member)
     ///
     pub protocol_handlers: Vec<ProtocolHandlerResource>,
 
@@ -511,6 +520,7 @@ pub struct WebAppManifest {
     ///
     /// # See also
     ///
+    /// - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Manifest/share_target)
     /// - [Specification](https://w3c.github.io/web-share-target/#share_target-member)
     ///
     pub share_target: Option<ShareTargetResource>,
