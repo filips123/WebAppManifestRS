@@ -596,7 +596,7 @@ impl WebAppManifest {
         if let Url::Relative(scope) = &self.scope {
             self.scope = Url::Absolute(manifest_url.join(scope)?);
         } else if let Url::Unknown = &self.scope {
-            let Url::Absolute(start_url) = &self.start_url else {  unreachable!() };
+            let Url::Absolute(start_url) = &self.start_url else { unreachable!() };
             self.scope = Url::Absolute(start_url.join(".")?);
         }
 
