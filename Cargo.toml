@@ -15,8 +15,8 @@ version = "0.0.0"
 # Core dependencies
 parse-display = "0.8.0"
 serde = { version = "1.0.130", features = ["derive"] }
-serde_with = { version = "2.2.0", features = ["macros"] }
-smart-default = "0.6.0"
+serde_with = { version = "3.0.0", features = ["macros"] }
+smart-default = "0.7.0"
 thiserror = "1.0.30"
 
 # Optional dependencies

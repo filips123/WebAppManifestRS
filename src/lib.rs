@@ -144,14 +144,14 @@
 //! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 //!
-//! ## Optional Features
-//!
-//! - `schemars` - Implements `JsonSchema` for manifest types.
-//!
 //! ## Other
 //!
 //! See [docs][link-docs] of structs and fields for more documentation.
 //! You can also check the [integration tests][link-tests] for usage examples.
+//!
+//! # Optional Features
+//!
+//! - `schemars` - Implements `JsonSchema` for manifest types.
 //!
 //! # Versioning
 //!
