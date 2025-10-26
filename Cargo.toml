@@ -13,23 +13,23 @@ version = "0.0.0"
 
 [dependencies]
 # Core dependencies
-parse-display = "0.8.0"
+parse-display = "0.10.0"
 serde = { version = "1.0.130", features = ["derive"] }
 serde_with = { version = "3.0.0", features = ["macros"] }
 smart-default = "0.7.0"
-thiserror = "1.0.30"
+thiserror = "2.0.0"
 
 # Optional dependencies
-schemars = { version = "0.8.11", features = ["url"], optional = true }
+schemars = { version = "1.0.0", features = ["url2"], optional = true }
 
 # Type dependencies
-csscolorparser = { version = "0.6.0", features = ["serde"] }
+csscolorparser = { version = "0.7.0", features = ["serde"] }
 language-tags = { version = "0.3.0", features = ["serde"] }
-mime = { git = "https://github.com/filips123/mime", branch = "implement-eq-partialeq", features = ["serde1"] }
+mime = { git = "https://github.com/filips123/mime", branch = "fix-compile-warnings", features = ["serde1"] }
 url = { version = "2.2.0", features = ["serde"] }
 
 [dev-dependencies]
 # Test dependencies
 assert_matches = "1.5.0"
-parameterized = "1.0.0"
+parameterized = "2.0.0"
 serde_json = "1.0.80"

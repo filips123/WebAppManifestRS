@@ -561,10 +561,10 @@ impl WebAppManifest {
     /// # Parameters
     ///
     /// - `document_url`: The main document URL from which the manifest parsing was triggered.
-    ///                   It is used to determine the start URL if it is unknown and check
-    ///                   if the start URL is in the correct origin.
+    ///   It is used to determine the start URL if it is unknown and check
+    ///   if the start URL is in the correct origin.
     /// - `manifest_url`: The manifest URL. It is used as a base URL for all relative URLs
-    ///                   specified in the manifest.
+    ///   specified in the manifest.
     ///
     /// # Returns
     ///

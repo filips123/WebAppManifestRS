@@ -294,26 +294,19 @@ impl Default for ImageSize {
 }
 
 #[cfg(feature = "schemars")]
-fn image_size_fixed(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
-    schemars::schema::SchemaObject {
-        instance_type: Some(schemars::schema::InstanceType::String.into()),
-        string: Some(Box::new(schemars::schema::StringValidation {
-            pattern: Some("(?P<0>[0-9]+)[xX](?P<1>[0-9]+)".into()),
-            ..Default::default()
-        })),
-        ..Default::default()
-    }
-    .into()
+fn image_size_fixed(_: &mut schemars::SchemaGenerator) -> schemars::Schema {
+    schemars::json_schema!({
+        "type": "string",
+        "pattern": "(?P<0>[0-9]+)[xX](?P<1>[0-9]+)"
+    })
 }
 
 #[cfg(feature = "schemars")]
-fn image_size_any(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
-    schemars::schema::SchemaObject {
-        instance_type: Some(schemars::schema::InstanceType::String.into()),
-        enum_values: Some(vec!["any".into()]),
-        ..Default::default()
-    }
-    .into()
+fn image_size_any(_: &mut schemars::SchemaGenerator) -> schemars::Schema {
+    schemars::json_schema!({
+        "type": "string",
+        "enum": ["any"]
+    })
 }
 
 /// The purpose of the image.
